@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Optional;
 
@@ -19,21 +20,21 @@ import java.util.Optional;
 public class DomXmlParserServiceImpl implements DomXmlParserService {
 
     @Override
-    public Optional<Entry> parseXmlFile(final File xmlEntryFile) {
+    public Optional<Entry> parseXmlFile(final String xmlFileName, final byte[] bytes) {
         try {
             log.info("Method DomXmlParserServiceImpl.parseXmlFile(File xmlEntryFile) executing!\n" +
-                     "Processing file {}...", xmlEntryFile.getName());
+                     "Processing file {}...", xmlFileName);
 
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             final DocumentBuilder builder = factory.newDocumentBuilder();
 
-            final Document document = builder.parse(xmlEntryFile);
+            final Document document = builder.parse(new ByteArrayInputStream(bytes));
             final Element startNode = document.getDocumentElement();
             startNode.normalize();
 
             final Optional<Entry> parsedEntry = proccessNode(startNode);
 
-            parsedEntry.ifPresent(entry -> entry.setFileName(xmlEntryFile.getName()));
+            parsedEntry.ifPresent(entry -> entry.setFileName(xmlFileName));
 
             return parsedEntry;
         } catch (Exception e) {
