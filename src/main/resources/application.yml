@@ -2,8 +2,31 @@ spring:
   application:
     name: BanzaiTest
 
+  jmx:
+    enabled: false
+
+#конфигурация для актуатора
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+        show-details: always
+
+  health:
+    diskSpace.enabled: false
+    mail.enabled: false
+    refresh.enabled: false
 
 directory:
   toProccess:
   completed:
   notCompleted:
+
+
+logging:
+    file: logs/banzai-test.log

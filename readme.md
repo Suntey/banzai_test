@@ -1,0 +1,3 @@
+banzai-test
+
+standalone сервис

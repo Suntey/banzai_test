@@ -10,4 +10,5 @@ import lombok.Data;
 public class Entry {
     private String content;
     private String creationDate;
+    private String fileName;
 }
