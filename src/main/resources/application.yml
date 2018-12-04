@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: BanzaiTest
+
+
+directory:
+  toProccess:
+  completed:
+  notCompleted:
