@@ -8,8 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.*;
+import java.util.stream.Stream;
 
 /**
  * Created by Kuznetsov A.S. 05.12.2018
@@ -20,21 +24,54 @@ public class ScheduledUploadServiceImpl {
 
     private final int batchSize;
 
+    private final int queueSize;
+
+    private final Path sourceDirectory;
+
     private final DomXmlParserService domXmlParserService;
 
     private final EntryService entryService;
 
     @Autowired
     public ScheduledUploadServiceImpl(@Value("${batchSize}") final int batchSize,
+                                      @Value("${queueSize}") final int queueSize,
+                                      @Value("${directory.sourceFiles}") final String sourceDirectory,
                                       final DomXmlParserService domXmlParserService,
                                       final EntryService entryService) {
         this.batchSize = batchSize;
+        this.queueSize = queueSize;
+        this.sourceDirectory = Paths.get(sourceDirectory);
         this.domXmlParserService = domXmlParserService;
         this.entryService = entryService;
     }
 
     @Scheduled
-    public void uploadFiles() {
-        final BlockingQueue<Tuple2<String, byte[]>> blockingQueue = new LinkedBlockingQueue<>();
+    public void uploadFiles() throws InterruptedException {
+        final BlockingQueue<Tuple2<String, byte[]>> blockingQueue = new LinkedBlockingQueue<>(queueSize);
+
+        final FilesProducerServiceImpl filesProducerService = new FilesProducerServiceImpl(blockingQueue, sourceDirectory);
+
+        CompletableFuture.runAsync(filesProducerService);
+        final CountDownLatch countDownLatch = new CountDownLatch(getFilesCount());
+        final FilesConsumerServiceImpl filesConsumerService = new FilesConsumerServiceImpl(domXmlParserService, countDownLatch, blockingQueue, batchSize);
+
+        final ExecutorService exec = Executors.newFixedThreadPool(10);
+
+        CompletableFuture.runAsync(filesConsumerService, exec);
+        countDownLatch.await();
+        exec.shutdown();
+    }
+
+    private int getFilesCount() {
+        try (Stream<Path> fileStream = Files.walk(sourceDirectory)) {
+            final long count = fileStream
+                    .filter(file -> !file.toFile().isDirectory())
+                    .count();
+            assert (count > Integer.MAX_VALUE);
+            return (int) count;
+        } catch (IOException e) {
+            log.error("Error in method FilesProducerServiceImpl.putFilesIntoQueue()", e);
+            return 0;
+        }
     }
 }

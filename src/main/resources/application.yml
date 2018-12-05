@@ -23,12 +23,13 @@ management:
     refresh.enabled: false
 
 directory:
-  toProccess:
-  completed:
-  notCompleted:
+  sourceFiles:
+  completedFiles:
+  notCompletedFiles:
 
 
 logging:
     file: logs/banzai-test.log
 
 batchSize: 500
+queueSize: 20000

@@ -54,6 +54,7 @@ public class FilesConsumerServiceImpl implements Runnable {
                 }
             } catch (InterruptedException e) {
                 log.error("FilesConsumerServiceImpl error in method run!", e);
+                //TODO дописать обработку
             } finally {
                 countDownLatch.countDown();
             }

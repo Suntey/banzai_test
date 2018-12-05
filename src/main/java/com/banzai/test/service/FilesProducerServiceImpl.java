@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.stream.Stream;
 
 @Slf4j
-public class FilesProducerServiceImpl implements FilesProducerService {
+public class FilesProducerServiceImpl implements Runnable {
 
     private final BlockingQueue<Tuple2<String, byte[]>> blockingQueue;
 
@@ -21,7 +21,8 @@ public class FilesProducerServiceImpl implements FilesProducerService {
         this.directoryFrom = directoryFrom;
     }
 
-    public void getEntryFiles() {
+    @Override
+    public void run() {
         if (!directoryFrom.toFile().isDirectory()) {
             log.error("Invalid path to directory with files!");
             return;
