@@ -1,7 +1,9 @@
 package com.banzai.test.repository;
 
+import com.banzai.test.dto.Entry;
+
 import java.util.Collection;
 
 public interface EntryRepository {
-    boolean batchSaveEntries(Collection entries);
+    void batchSaveEntries(Collection<Entry> entries);
 }
