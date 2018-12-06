@@ -20,13 +20,17 @@ public class FilesConsumerServiceImpl implements Runnable {
 
     private final int batchSize;
 
+    private final EntryService entryService;
+
 
     public FilesConsumerServiceImpl(final DomXmlParserService domXmlParserService, final CountDownLatch countDownLatch,
-                                    final BlockingQueue<Tuple2<String, byte[]>> blockingQueue, final int batchSize) {
+                                    final BlockingQueue<Tuple2<String, byte[]>> blockingQueue, final int batchSize,
+                                    final EntryService entryService) {
         this.domXmlParserService = domXmlParserService;
         this.countDownLatch = countDownLatch;
         this.blockingQueue = blockingQueue;
         this.batchSize = batchSize;
+        this.entryService = entryService;
     }
 
     private Optional<Entry> parseFile(final Tuple2<String, byte[]> fileToParse){
@@ -49,7 +53,7 @@ public class FilesConsumerServiceImpl implements Runnable {
 
                 //отправить на сохранение если size = batchSize
                 if (collectionToSave.size() == batchSize) {
-                    batchLoadEntries(collectionToSave);
+                    final boolean isSaved = batchLoadEntries(collectionToSave);
                     collectionToSave.clear();
                 }
             } catch (InterruptedException e) {
@@ -61,12 +65,21 @@ public class FilesConsumerServiceImpl implements Runnable {
         }
 
         if (!collectionToSave.isEmpty()) {
-            batchLoadEntries(collectionToSave);
+            final boolean isSaved = batchLoadEntries(collectionToSave);
         }
     }
 
-    private void batchLoadEntries(final Collection<Entry> entries) {
-        //вызов репозитория
-        //перенос файлов
+    private void batchLoadAndMoveFiles() {
+        //TODO
+    }
+
+    private boolean batchLoadEntries(final Collection<Entry> entries) {
+        try {
+            entryService.batchSaveEntries(entries);
+            return true;
+        } catch (Exception e) {
+            log.error("Error while batch saving. Rollback transaction!", e);
+            return false;
+        }
     }
 }

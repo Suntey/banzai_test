@@ -53,7 +53,7 @@ public class ScheduledUploadServiceImpl {
 
         CompletableFuture.runAsync(filesProducerService);
         final CountDownLatch countDownLatch = new CountDownLatch(getFilesCount());
-        final FilesConsumerServiceImpl filesConsumerService = new FilesConsumerServiceImpl(domXmlParserService, countDownLatch, blockingQueue, batchSize);
+        final FilesConsumerServiceImpl filesConsumerService = new FilesConsumerServiceImpl(domXmlParserService, countDownLatch, blockingQueue, batchSize, entryService);
 
         final ExecutorService exec = Executors.newFixedThreadPool(10);
 
