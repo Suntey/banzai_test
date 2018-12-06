@@ -1,0 +1,9 @@
+
+CREATE SCHEMA IF NOT EXISTS banzai;
+
+CREATE TABLE IF NOT EXISTS banzai.entry (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  content VARCHAR(1024) NOT NULL,
+  creation_date DATE NOT NULL,
+);
+
