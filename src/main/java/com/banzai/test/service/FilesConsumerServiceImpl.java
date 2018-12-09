@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 @Slf4j
 public class FilesConsumerServiceImpl implements Runnable {
@@ -22,6 +24,8 @@ public class FilesConsumerServiceImpl implements Runnable {
 
     private final EntryService entryService;
 
+//    private final CyclicBarrier cyclicBarrier;
+
 
     public FilesConsumerServiceImpl(final DomXmlParserService domXmlParserService, final CountDownLatch countDownLatch,
                                     final BlockingQueue<Tuple2<String, byte[]>> blockingQueue, final int batchSize,
@@ -31,6 +35,7 @@ public class FilesConsumerServiceImpl implements Runnable {
         this.blockingQueue = blockingQueue;
         this.batchSize = batchSize;
         this.entryService = entryService;
+//        this.cyclicBarrier = cyclicBarrier;
     }
 
     private Optional<Entry> parseFile(final Tuple2<String, byte[]> fileToParse){
@@ -52,7 +57,7 @@ public class FilesConsumerServiceImpl implements Runnable {
                 optionalEntry.ifPresent(collectionToSave::add);
 
                 //отправить на сохранение если size = batchSize
-                if (collectionToSave.size() == batchSize) {
+                if (collectionToSave.size() == batchSize ) {
                     final boolean isSaved = batchLoadEntries(collectionToSave);
                     collectionToSave.clear();
                 }
@@ -68,7 +73,18 @@ public class FilesConsumerServiceImpl implements Runnable {
             final boolean isSaved = batchLoadEntries(collectionToSave);
             System.out.println(isSaved);
         }
+//        waitsOtherThreads();
     }
+
+//    private void waitsOtherThreads() {
+//        try {
+//            cyclicBarrier.await();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (BrokenBarrierException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void batchLoadAndMoveFiles() {
         //TODO

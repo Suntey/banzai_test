@@ -32,6 +32,8 @@ public class ScheduledUploadServiceImpl {
 
     private final EntryService entryService;
 
+    private static final int THREAD_NUMBER = 10;
+
     @Autowired
     public ScheduledUploadServiceImpl(@Value("${batchSize}") final int batchSize,
                                       @Value("${queueSize}") final int queueSize,
@@ -52,13 +54,16 @@ public class ScheduledUploadServiceImpl {
         final FilesProducerServiceImpl filesProducerService = new FilesProducerServiceImpl(blockingQueue, sourceDirectory);
 
         CompletableFuture.runAsync(filesProducerService);
+
         final CountDownLatch countDownLatch = new CountDownLatch(getFilesCount());
+        final ExecutorService exec = Executors.newFixedThreadPool(THREAD_NUMBER);
+//        final CyclicBarrier cyclicBarrier = new CyclicBarrier(THREAD_NUMBER, exec::shutdown);
         final FilesConsumerServiceImpl filesConsumerService = new FilesConsumerServiceImpl(domXmlParserService, countDownLatch, blockingQueue, batchSize, entryService);
 
-        final ExecutorService exec = Executors.newFixedThreadPool(10);
+        final CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(filesConsumerService, exec);
+        CompletableFuture.allOf(voidCompletableFuture).join();
 
-        CompletableFuture.runAsync(filesConsumerService, exec);
-        countDownLatch.await();
+//        countDownLatch.await();
         exec.shutdown();
     }
 
