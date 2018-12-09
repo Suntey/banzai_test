@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <appender name="ROLLING-FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
     <springProfile name="dev">
-        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-        <appender name="ROLLING-FILE"
-                  class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <encoder>
-                <charset>UTF-8</charset>
-                <pattern>${FILE_LOG_PATTERN}</pattern>
-            </encoder>
-            <file>${LOG_FILE}</file>
-            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>${LOG_FILE}_%d{yyyy-MM-dd}.log</fileNamePattern>
-                <maxHistory>15</maxHistory>
-                <totalSizeCap>3GB</totalSizeCap>
-            </rollingPolicy>
-        </appender>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="ROLLING-FILE"/>
@@ -23,24 +26,15 @@
     </springProfile>
 
     <springProfile name="prod">
-        <appender name="ROLLING-FILE"
-                  class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <encoder>
-                <pattern>${FILE_LOG_PATTERN}</pattern>
-            </encoder>
-            <file>${LOG_FILE}</file>
-            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
-                <maxHistory>30</maxHistory>
-                <totalSizeCap>3GB</totalSizeCap>
-                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                    <maxFileSize>10MB</maxFileSize>
-                </timeBasedFileNamingAndTriggeringPolicy>
-            </rollingPolicy>
-        </appender>
-
         <root level="INFO">
             <appender-ref ref="ROLLING-FILE"/>
         </root>
     </springProfile>
+
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
 </configuration>

@@ -4,6 +4,7 @@ import com.banzai.test.dto.Entry;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 public class EntryRepositoryImpl implements EntryRepository {
 
     private static final String INSERT_SQL = "INSERT INTO banzai.entry(content, creation_date) VALUES (?, ?)";
+
+    private static final String GET_ENTRY_BY_DATE = "SELECT * FROM banzai.entry WHERE creation_date = ?";
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -45,7 +48,6 @@ public class EntryRepositoryImpl implements EntryRepository {
 
     private Object[] getParamsWithId(final Entry entry) {
         final Object[] params = new Object[2];
-
         params[0] = entry.getContent();
         params[1] = convertStringToDate(entry.getCreationDate());
 
@@ -54,5 +56,16 @@ public class EntryRepositoryImpl implements EntryRepository {
 
     private LocalDateTime convertStringToDate(final String date) {
         return LocalDateTime.parse(date, formatter);
+    }
+
+    public Collection<Entry> getEntriesByCreationDate(final String date) {
+        return jdbcTemplate.query(GET_ENTRY_BY_DATE, getEntryRowMapper(), convertStringToDate(date));
+    }
+
+    private RowMapper<Entry> getEntryRowMapper() {
+        return (rs, rowNum) -> Entry.builder()
+                .content(rs.getString("content"))
+                .creationDate(rs.getString("creation_date"))
+                .build();
     }
 }

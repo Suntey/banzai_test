@@ -2,9 +2,9 @@ spring:
   datasource:
     hikari:
       driver-class-name: org.postgresql.Driver
-      jdbc-url:
-      username:
-      password:
+      jdbc-url: jdbc:postgresql://localhost:5432/schedule_db
+      username: bolshoi
+      password: "p@ssw0rd!"
       minimum-idle: 1
       maximum-pool-size: 15
       auto-commit: false

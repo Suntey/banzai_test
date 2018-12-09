@@ -45,7 +45,7 @@ public class ScheduledUploadServiceImpl {
         this.entryService = entryService;
     }
 
-    @Scheduled
+    @Scheduled(cron = "${cron.schedule}")
     public void uploadFiles() throws InterruptedException {
         final BlockingQueue<Tuple2<String, byte[]>> blockingQueue = new LinkedBlockingQueue<>(queueSize);
 
@@ -67,7 +67,7 @@ public class ScheduledUploadServiceImpl {
             final long count = fileStream
                     .filter(file -> !file.toFile().isDirectory())
                     .count();
-            assert (count > Integer.MAX_VALUE);
+            assert (count < Integer.MAX_VALUE);
             return (int) count;
         } catch (IOException e) {
             log.error("Error in method FilesProducerServiceImpl.putFilesIntoQueue()", e);

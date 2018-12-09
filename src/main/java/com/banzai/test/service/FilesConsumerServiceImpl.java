@@ -66,6 +66,7 @@ public class FilesConsumerServiceImpl implements Runnable {
 
         if (!collectionToSave.isEmpty()) {
             final boolean isSaved = batchLoadEntries(collectionToSave);
+            System.out.println(isSaved);
         }
     }
 

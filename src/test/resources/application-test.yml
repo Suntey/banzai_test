@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: BanzaiTest
+  datasource:
+    url: jdbc:postgresql://localhost:5432/schedule_db
+    driver-class-name: org.postgresql.Driver
+    username: bolshoi
+    password: "p@ssw0rd!"
+
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 15
+      auto-commit: false
+#  datasource:
+#    initialization-mode: always
+#    hikari:
+#      driver-class-name: org.h2.Driver
+#      username: sa
+#      password:
+#      jdbc-url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS banzai\;RUNSCRIPT FROM 'classpath:data.sql';
+directory:
+  sourceFiles: "/home/alexander/IdeaProjects/testFiles/"
+#  completedFiles:
+#  notCompletedFiles:
+
+batchSize: 500
+queueSize: 20000
+
+#spring.h2.console.enabled: true
+logging.level.org.springframework.transaction.interceptor: TRACE
+
+
+

@@ -1,10 +1,9 @@
 spring:
   application:
     name: BanzaiTest
-
   jmx:
     enabled: false
-
+  output.ansi.enabled: ALWAYS
 #конфигурация для актуатора
 management:
   endpoints:
@@ -23,7 +22,7 @@ management:
     refresh.enabled: false
 
 directory:
-  sourceFiles:
+  sourceFiles: /home/alexander/IdeaProjects/testFiles/test1.xml
   completedFiles:
   notCompletedFiles:
 
@@ -33,3 +32,6 @@ logging:
 
 batchSize: 500
 queueSize: 20000
+
+cron:
+  schedule: "0 0 21 * * *"

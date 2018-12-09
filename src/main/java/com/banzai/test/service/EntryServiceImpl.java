@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Service
 @Slf4j
@@ -27,5 +28,16 @@ public class EntryServiceImpl implements EntryService {
                  "\nCollection size: {}", entries.size());
 
         entryRepository.batchSaveEntries(entries);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Collection<Entry> getEntriesByCreationDate(final String date) {
+        try {
+            return entryRepository.getEntriesByCreationDate(date);
+        } catch (Exception e) {
+            log.error("Error in method EntryServiceImpl.getEntriesByCreationDate(String date)", e);
+            return Collections.emptyList();
+        }
     }
 }
