@@ -28,6 +28,7 @@
     <springProfile name="prod">
         <root level="INFO">
             <appender-ref ref="ROLLING-FILE"/>
+            <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
 
