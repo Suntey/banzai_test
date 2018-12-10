@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 /**
@@ -54,16 +55,15 @@ public class ScheduledUploadServiceImpl {
         final FilesProducerServiceImpl filesProducerService = new FilesProducerServiceImpl(blockingQueue, sourceDirectory);
 
         CompletableFuture.runAsync(filesProducerService);
+        final AtomicInteger counter = new AtomicInteger(getFilesCount());
 
         final CountDownLatch countDownLatch = new CountDownLatch(getFilesCount());
         final ExecutorService exec = Executors.newFixedThreadPool(THREAD_NUMBER);
-//        final CyclicBarrier cyclicBarrier = new CyclicBarrier(THREAD_NUMBER, exec::shutdown);
-        final FilesConsumerServiceImpl filesConsumerService = new FilesConsumerServiceImpl(domXmlParserService, countDownLatch, blockingQueue, batchSize, entryService);
+        final FilesConsumerServiceImpl filesConsumerService = new FilesConsumerServiceImpl(domXmlParserService, counter, blockingQueue, batchSize, entryService);
 
         final CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(filesConsumerService, exec);
         CompletableFuture.allOf(voidCompletableFuture).join();
 
-//        countDownLatch.await();
         exec.shutdown();
     }
 

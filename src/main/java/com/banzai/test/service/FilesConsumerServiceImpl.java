@@ -10,13 +10,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public class FilesConsumerServiceImpl implements Runnable {
 
     private final DomXmlParserService domXmlParserService;
-
-    private final CountDownLatch countDownLatch;
 
     private final BlockingQueue<Tuple2<String, byte[]>> blockingQueue;
 
@@ -24,14 +23,14 @@ public class FilesConsumerServiceImpl implements Runnable {
 
     private final EntryService entryService;
 
-//    private final CyclicBarrier cyclicBarrier;
+    private final AtomicInteger counter;
 
 
-    public FilesConsumerServiceImpl(final DomXmlParserService domXmlParserService, final CountDownLatch countDownLatch,
+    public FilesConsumerServiceImpl(final DomXmlParserService domXmlParserService, final AtomicInteger counter,
                                     final BlockingQueue<Tuple2<String, byte[]>> blockingQueue, final int batchSize,
                                     final EntryService entryService) {
         this.domXmlParserService = domXmlParserService;
-        this.countDownLatch = countDownLatch;
+        this.counter = counter;
         this.blockingQueue = blockingQueue;
         this.batchSize = batchSize;
         this.entryService = entryService;
@@ -50,7 +49,7 @@ public class FilesConsumerServiceImpl implements Runnable {
     @Override
     public void run() {
         final Collection<Entry> collectionToSave = new ArrayList<>();
-        while (countDownLatch.getCount() != 0) {
+        while (counter.get() != 0) {
             try {
                 final Tuple2<String, byte[]> fileNameAndByteArrayMap = blockingQueue.take();
                 final Optional<Entry> optionalEntry = parseFile(fileNameAndByteArrayMap);
@@ -65,7 +64,7 @@ public class FilesConsumerServiceImpl implements Runnable {
                 log.error("FilesConsumerServiceImpl error in method run!", e);
                 //TODO дописать обработку
             } finally {
-                countDownLatch.countDown();
+                counter.decrementAndGet();
             }
         }
 
@@ -73,18 +72,8 @@ public class FilesConsumerServiceImpl implements Runnable {
             final boolean isSaved = batchLoadEntries(collectionToSave);
             System.out.println(isSaved);
         }
-//        waitsOtherThreads();
     }
 
-//    private void waitsOtherThreads() {
-//        try {
-//            cyclicBarrier.await();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (BrokenBarrierException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private void batchLoadAndMoveFiles() {
         //TODO
