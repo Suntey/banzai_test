@@ -20,7 +20,7 @@ _DEPLOY LINUX:_
 `After=syslog.target`<br/>
 `[Service]`<br/>
 `SyslogIdentifier=banzai-test`<br/>
-`ExecStart=/usr/bin/java -server -Xmx1g -Xms1g -jar /home/../../banzai-test.jar --spring.profiles.active=prod`<br/>
+`ExecStart=/usr/bin/java -server -Xmx1g -Xms1g -XX:+HeapDumpOnOutOfMemoryError -jar /home/../../banzai-test.jar --spring.profiles.active=prod`<br/>
 `User=Имя пользователя `<br/>
 `Type=simple Restart=on-failure`<br/>
 `RestartSec=15`<br/>
@@ -42,7 +42,7 @@ _DEPLOY LINUX:_
 
 _DEPLOY_WINDOWS_
 
-Приложение будет завернута в службы ОС windows.
+Приложение будет завернуто в службы ОС windows с помощью windows service wrapper.
 
 Создайте banzai-test.xml файл со следующим содержимым
 
