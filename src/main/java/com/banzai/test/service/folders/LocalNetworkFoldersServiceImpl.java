@@ -22,12 +22,12 @@ public class LocalNetworkFoldersServiceImpl implements LocalNetworkFoldersServic
 
     private final File errorProcessFileDir;
 
-    public LocalNetworkFoldersServiceImpl(@Value("${Path.dirFrom}") final File sourceFile,
-                                          @Value("${Path.dirMoveTo}") final String dirFileTo,
-                                          @Value("${Path.dirError}") final String backupFileTo) {
+    public LocalNetworkFoldersServiceImpl(@Value("${directory.sourceFiles}") final File sourceFile,
+                                          @Value("${directory.completedFiles}") final String successProcessFileDir,
+                                          @Value("${directory.notCompletedFiles}") final String errorProcessFileDir) {
         this.sourceFile = sourceFile;
-        this.successProcessFileDir = dirFileTo;
-        this.errorProcessFileDir = new File(backupFileTo);
+        this.successProcessFileDir = successProcessFileDir;
+        this.errorProcessFileDir = new File(errorProcessFileDir);
     }
 
 
