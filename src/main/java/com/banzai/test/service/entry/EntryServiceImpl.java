@@ -1,4 +1,4 @@
-package com.banzai.test.service;
+package com.banzai.test.service.entry;
 
 import com.banzai.test.dto.Entry;
 import com.banzai.test.repository.EntryRepository;

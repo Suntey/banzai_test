@@ -1,6 +1,7 @@
 package com.banzai.test.service;
 
 import com.banzai.test.dto.Entry;
+import com.banzai.test.service.entry.EntryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

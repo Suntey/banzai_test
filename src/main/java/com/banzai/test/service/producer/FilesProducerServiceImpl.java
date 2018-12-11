@@ -1,4 +1,4 @@
-package com.banzai.test.service;
+package com.banzai.test.service.producer;
 
 import com.banzai.test.dto.Tuple2;
 import lombok.extern.slf4j.Slf4j;

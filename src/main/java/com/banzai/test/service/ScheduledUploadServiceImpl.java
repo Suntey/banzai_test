@@ -1,7 +1,11 @@
 package com.banzai.test.service;
 
 import com.banzai.test.dto.Tuple2;
+import com.banzai.test.service.consumer.FilesConsumerServiceImpl;
+import com.banzai.test.service.entry.EntryService;
+import com.banzai.test.service.folders.LocalNetworkFoldersService;
 import com.banzai.test.service.parser.DomXmlParserService;
+import com.banzai.test.service.producer.FilesProducerServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +37,8 @@ public class ScheduledUploadServiceImpl {
 
     private final EntryService entryService;
 
+    private final LocalNetworkFoldersService foldersService;
+
     private static final int THREAD_NUMBER = 10;
 
     @Autowired
@@ -40,26 +46,27 @@ public class ScheduledUploadServiceImpl {
                                       @Value("${queueSize}") final int queueSize,
                                       @Value("${directory.sourceFiles}") final String sourceDirectory,
                                       final DomXmlParserService domXmlParserService,
-                                      final EntryService entryService) {
+                                      final EntryService entryService,
+                                      final LocalNetworkFoldersService foldersService) {
         this.batchSize = batchSize;
         this.queueSize = queueSize;
         this.sourceDirectory = Paths.get(sourceDirectory);
         this.domXmlParserService = domXmlParserService;
         this.entryService = entryService;
+        this.foldersService = foldersService;
     }
 
     @Scheduled(cron = "${cron.schedule}")
-    public void uploadFiles() throws InterruptedException {
+    public void uploadFiles() {
         final BlockingQueue<Tuple2<String, byte[]>> blockingQueue = new LinkedBlockingQueue<>(queueSize);
 
         final FilesProducerServiceImpl filesProducerService = new FilesProducerServiceImpl(blockingQueue, sourceDirectory);
 
         CompletableFuture.runAsync(filesProducerService);
-        final AtomicInteger counter = new AtomicInteger(getFilesCount());
 
-        final CountDownLatch countDownLatch = new CountDownLatch(getFilesCount());
+        final AtomicInteger counter = new AtomicInteger(getFilesCount());
         final ExecutorService exec = Executors.newFixedThreadPool(THREAD_NUMBER);
-        final FilesConsumerServiceImpl filesConsumerService = new FilesConsumerServiceImpl(domXmlParserService, counter, blockingQueue, batchSize, entryService);
+        final FilesConsumerServiceImpl filesConsumerService = new FilesConsumerServiceImpl(domXmlParserService, counter, blockingQueue, batchSize, entryService, foldersService);
 
         final CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(filesConsumerService, exec);
         CompletableFuture.allOf(voidCompletableFuture).join();
