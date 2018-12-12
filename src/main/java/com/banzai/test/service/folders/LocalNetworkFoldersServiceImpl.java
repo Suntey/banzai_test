@@ -4,6 +4,7 @@ package com.banzai.test.service.folders;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import java.util.Collection;
  * Created by Kuznetsov A.S. 06.11.2018
  */
 @Service
+@Profile("{prod, dev}")
 @Slf4j
 public class LocalNetworkFoldersServiceImpl implements LocalNetworkFoldersService {
 

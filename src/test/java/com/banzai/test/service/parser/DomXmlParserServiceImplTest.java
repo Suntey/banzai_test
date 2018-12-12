@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,9 +31,9 @@ public class DomXmlParserServiceImplTest {
     private DomXmlParserService domXmlParserService;
 
     @Before
-    public void setUp() {
+    public void setUp() throws URISyntaxException {
         final ClassLoader classLoader = getClass().getClassLoader();
-        testXmlFile = Paths.get(classLoader.getResource("entry/test1.xml").getFile());
+        testXmlFile = Paths.get(classLoader.getResource("entry/test1.xml").toURI());
     }
 
     @Test

@@ -22,7 +22,7 @@ spring:
       password:
       jdbc-url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS banzai\;RUNSCRIPT FROM 'classpath:data.sql';
 directory:
-  sourceFiles: "/home/alexander/IdeaProjects/testFiles/"
+  sourceFiles: ${user.dir}/src/test/resources/entry
 #  completedFiles:
 #  notCompletedFiles:
 
