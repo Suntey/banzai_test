@@ -1,8 +1,6 @@
 package com.banzai.test.service.parser;
 
 import com.banzai.test.dto.Entry;
-
-import java.io.File;
 import java.util.Optional;
 
 /**

@@ -1,16 +1,6 @@
 spring:
   application:
     name: BanzaiTest
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/schedule_db
-#    driver-class-name: org.postgresql.Driver
-#    username: bolshoi
-#    password: "p@ssw0rd!"
-#
-#    hikari:
-#      minimum-idle: 1
-#      maximum-pool-size: 15
-#      auto-commit: false
   datasource:
     initialization-mode: always
     hikari:

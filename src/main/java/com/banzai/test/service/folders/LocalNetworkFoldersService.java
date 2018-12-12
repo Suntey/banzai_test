@@ -1,6 +1,5 @@
 package com.banzai.test.service.folders;
 
-import java.io.File;
 import java.util.Collection;
 
 /**
