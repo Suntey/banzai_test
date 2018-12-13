@@ -56,10 +56,13 @@ _**Deploy linux:**_
 
 _**Deploy windows:**_
 
-Приложение будет завернуто в службы ОС windows с помощью windows service wrapper.
+Можно развернуть приложение как служба ОС windows с помощью windows service wrapper.
+Полную инструкция здесь я писать не буду, просто приведу ссылку на инструкции, как это делается. 
 
-Создайте banzai-test.xml файл со следующим содержимым
+https://dzone.com/articles/spring-boot-as-a-windows-service-in-5-minutes
 
+Конфигурационный файл, в котором при желании нужно заменить пути на свои:
+banzai-test.xml
 
 `<?xml version="1.0" encoding="UTF-8"?>`<br/>
 `<service>`<br/>
@@ -78,3 +81,6 @@ _**Deploy windows:**_
 		`<allowservicelogon>true</allowservicelogon>`<br/>
 	`</serviceaccount>`<br/>
 `</service>`<br/>
+
+
+Более простой вариант:

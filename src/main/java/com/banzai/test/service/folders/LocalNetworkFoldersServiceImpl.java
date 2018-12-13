@@ -14,7 +14,7 @@ import java.util.Collection;
  * Created by Kuznetsov A.S. 06.11.2018
  */
 @Service
-@Profile("{prod, dev}")
+@Profile("!test")
 @Slf4j
 public class LocalNetworkFoldersServiceImpl implements LocalNetworkFoldersService {
 
