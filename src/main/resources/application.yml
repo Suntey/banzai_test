@@ -4,6 +4,7 @@ spring:
   jmx:
     enabled: false
   output.ansi.enabled: ALWAYS
+
 #конфигурация для актуатора
 management:
   endpoints:
@@ -22,16 +23,25 @@ management:
     refresh.enabled: false
 
 directory:
+  #sourceFiles - укажите здесь путь до директории с файлами
   sourceFiles: /home/alexander/IdeaProjects/testFiles/
+
+  #completedFiles - путь к папке, в которую программа будет переносить успешно отработанные файлы
   completedFiles:
+
+  #notCompletedFiles - путь к папке, в которую программа будет переносить файлы, при обработке которых возникли ошибки
   notCompletedFiles:
 
 
 logging:
     file: logs/banzai-test.log
 
+#Размер батча для единоразового сохранения сущностей. Т.е. в базу сохраняем не по одной строчке, а сразу пачкой.
 batchSize: 500
+
+#Размер блокирующей очереди
 queueSize: 20000
 
+#Конфигурация планировщика
 cron:
   schedule: "0 0 21 * * *"
