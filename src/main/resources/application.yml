@@ -24,17 +24,17 @@ management:
 
 directory:
   #sourceFiles - укажите здесь путь до директории с файлами
-  sourceFiles: /home/alexander/IdeaProjects/testFiles/
+  sourceFiles: C:/Users/a.kuznetsov/Appliations/test_stages/banzai_test/from/
 
   #completedFiles - путь к папке, в которую программа будет переносить успешно отработанные файлы
-  completedFiles:
+  completedFiles: C:/Users/a.kuznetsov/Appliations/test_stages/banzai_test/to/
 
   #notCompletedFiles - путь к папке, в которую программа будет переносить файлы, при обработке которых возникли ошибки
-  notCompletedFiles:
-
+  notCompletedFiles: C:/Users/a.kuznetsov/Appliations/test_stages/banzai_test/error/
 
 logging:
-    file: logs/banzai-test.log
+  file: logs/banzai-test.log
+  config: classpath:logback-spring.xml
 
 #Размер батча для единоразового сохранения сущностей. Т.е. в базу сохраняем не по одной строчке, а сразу пачкой.
 batchSize: 500
@@ -44,4 +44,4 @@ queueSize: 20000
 
 #Конфигурация планировщика
 cron:
-  schedule: "0 0 21 * * *"
+  schedule: "0 0/1 * * * *"

@@ -18,18 +18,18 @@ import java.util.Collection;
 @Slf4j
 public class LocalNetworkFoldersServiceImpl implements LocalNetworkFoldersService {
 
-    private final File sourceFile;
+    private final String sourceFile;
 
     private final String successProcessFileDir;
 
-    private final File errorProcessFileDir;
+    private final String errorProcessFileDir;
 
-    public LocalNetworkFoldersServiceImpl(@Value("${directory.sourceFiles}") final File sourceFile,
+    public LocalNetworkFoldersServiceImpl(@Value("${directory.sourceFiles}") final String sourceFile,
                                           @Value("${directory.completedFiles}") final String successProcessFileDir,
                                           @Value("${directory.notCompletedFiles}") final String errorProcessFileDir) {
         this.sourceFile = sourceFile;
         this.successProcessFileDir = successProcessFileDir;
-        this.errorProcessFileDir = new File(errorProcessFileDir);
+        this.errorProcessFileDir = errorProcessFileDir;
     }
 
 
@@ -41,10 +41,10 @@ public class LocalNetworkFoldersServiceImpl implements LocalNetworkFoldersServic
     private void moveFile(final String fileName, final boolean isSuccess) {
         try {
             if (isSuccess) {
-                FileUtils.moveFile(sourceFile, new File(successProcessFileDir + fileName));
+                FileUtils.moveFile(createFile(sourceFile, fileName), createFile(successProcessFileDir, fileName));
                 log.info("File {} moved to success-directory", fileName);
             } else {
-                FileUtils.moveFile(sourceFile, new File(errorProcessFileDir + fileName));
+                FileUtils.moveFile(createFile(sourceFile, fileName), createFile(errorProcessFileDir, fileName));
                 log.info("File {} moved to error-directory", fileName);
             }
 
@@ -52,5 +52,9 @@ public class LocalNetworkFoldersServiceImpl implements LocalNetworkFoldersServic
             final String errorMessage = String.format("Error while moving file %s to directory", fileName);
             log.error(errorMessage, e);
         }
+    }
+
+    private File createFile(final String sourcePath, final String fileName) {
+        return new File(sourcePath+fileName);
     }
 }

@@ -60,6 +60,8 @@ public class ScheduledUploadServiceImpl {
 
     @Scheduled(cron = "${cron.schedule}")
     public void uploadFiles() {
+        log.info("Run scheduled process!");
+
         final BlockingQueue<Tuple2<String, byte[]>> blockingQueue = new LinkedBlockingQueue<>(queueSize);
 
         final FilesProducerServiceImpl filesProducerService = new FilesProducerServiceImpl(blockingQueue, sourceDirectory);
@@ -74,6 +76,7 @@ public class ScheduledUploadServiceImpl {
         CompletableFuture.allOf(voidCompletableFuture).join();
         exec.shutdown();
         moveOtherFiles();
+        log.info("Complete scheduled process!");
     }
 
     /**
