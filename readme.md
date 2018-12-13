@@ -4,7 +4,7 @@
     По умолчанию мониторит заданную в конфигурационном файле application.yml директорию раз в 10 минут.
 
 
-_FIRST_START_
+_**First start:**_
     
     В приложении существует три профиля: prod, dev, test.
     Общая конфигурация находится в папке application.yml.
@@ -16,12 +16,12 @@ _FIRST_START_
     Затем необходимо в application-prod.yml изменить настройки БД на ваши.
     При выборе профилей dev или test приложение работает с in-memory h2 db, конфигурация данных профилей доработки не требует.  
 
-_BUILD_
+_**Build**_
 
 Для сборки jar файла выполняем в терминале команду:<br/> 
 `mvn clean package`
 
-_DEPLOY LINUX:_
+_**Deploy linux:**_
 
 С root правамиНеобходимо создать файл:
 
@@ -54,7 +54,7 @@ _DEPLOY LINUX:_
 3)  sudo systemctl restart banzai-test.service - рестарт сервиса 
 3)  sudo systemctl status banzai-test.service - проверить статус сервиса(работает/не работает)
 
-_DEPLOY_WINDOWS_
+_**Deploy windows:**_
 
 Приложение будет завернуто в службы ОС windows с помощью windows service wrapper.
 
