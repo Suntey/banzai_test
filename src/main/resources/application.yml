@@ -22,7 +22,7 @@ management:
     refresh.enabled: false
 
 directory:
-  sourceFiles: /home/alexander/IdeaProjects/testFiles/test1.xml
+  sourceFiles: /home/alexander/IdeaProjects/testFiles/
   completedFiles:
   notCompletedFiles:
 

@@ -16,8 +16,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -70,8 +72,25 @@ public class ScheduledUploadServiceImpl {
 
         final CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(filesConsumerService, exec);
         CompletableFuture.allOf(voidCompletableFuture).join();
-
         exec.shutdown();
+        moveOtherFiles();
+    }
+
+    /**
+     * Move files that have not been already moved to any directory
+     */
+    private void moveOtherFiles() {
+        try (Stream<Path> fileStream = Files.walk(sourceDirectory)) {
+            final Collection<String> notMovedFiles = fileStream.filter(file -> !file.toFile().isDirectory())
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toList());
+
+            foldersService.moveFiles(notMovedFiles, false);
+
+        } catch (IOException e) {
+            log.error("Error in method FilesProducerServiceImpl.putFilesIntoQueue()", e);
+        }
     }
 
     private int getFilesCount() {

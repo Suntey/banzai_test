@@ -44,7 +44,8 @@ public class FilesConsumerServiceImpl implements Runnable {
         try {
             return domXmlParserService.parseXmlFile(fileToParse.getValue1(), fileToParse.getValue2());
         } catch (Exception e) {
-            log.error("Error in method FileServiceImpl.processFiles!", e);
+            log.error("Error in method FileServiceImpl.parseFile!", e);
+            foldersService.moveFiles(Collections.singleton(fileToParse.getValue1()), false);
             return Optional.empty();
         }
     }

@@ -2,10 +2,8 @@ package com.banzai.test.service;
 
 import com.banzai.test.dto.Entry;
 import com.banzai.test.service.entry.EntryService;
-import com.banzai.test.service.folders.LocalNetworkFoldersService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -23,9 +21,6 @@ public class ScheduledUploadServiceImplTest {
 
     @Autowired
     private ScheduledUploadServiceImpl scheduledUploadService;
-
-    @Mock
-    private LocalNetworkFoldersService foldersService;
 
     @Autowired
     private EntryService entryService;
