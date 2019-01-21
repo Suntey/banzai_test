@@ -59,6 +59,7 @@ public class ScheduledUploadServiceImpl {
     }
 
     @Scheduled(cron = "${cron.schedule}")
+    /**Check git*/
     public void uploadFiles() {
         log.info("Run scheduled process!");
 
